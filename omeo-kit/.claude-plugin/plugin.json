@@ -1,0 +1,16 @@
+{
+  "name": "omeo-kit",
+  "version": "0.1.0",
+  "description": "Équipe d'agents et de skills pour intervenir proprement, en sécurité et sans régression sur le CRM Omeo.app. Distribue le savoir du développeur senior (sécurité d'accès, calculs métier, versioning des déballes, intégrations) en garde-fous vérifiables.",
+  "author": {
+    "name": "Équipe Omeo"
+  },
+  "keywords": [
+    "django",
+    "crm",
+    "security",
+    "permissions",
+    "code-review",
+    "onboarding"
+  ]
+}

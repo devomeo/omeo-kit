@@ -1,0 +1,30 @@
+{
+  "name": "mc-groupe-plugins",
+  "owner": {
+    "name": "MC Groupe",
+    "email": "marketing@mc-groupe.com"
+  },
+  "metadata": {
+    "description": "Marketplace de plugins Claude Code de MC Groupe (Omeo.app et marques associées).",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "omeo-kit",
+      "source": "./omeo-kit",
+      "description": "Équipe d'agents et de skills pour intervenir en sécurité et sans régression sur le CRM Omeo.app, et réduire la dépendance au développeur senior.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Équipe Omeo"
+      },
+      "keywords": [
+        "django",
+        "crm",
+        "security",
+        "permissions",
+        "code-review",
+        "onboarding"
+      ]
+    }
+  ]
+}
