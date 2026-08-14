@@ -30,7 +30,7 @@
       "name": "omeo-app-dev",
       "source": "./omeo-app-dev",
       "description": "Garde-fous, préconditions et registre de pièges pour développer sur le CRM Omeo.app. Empêche pendant l'écriture plutôt que de relire après.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "Équipe Omeo"
       },
