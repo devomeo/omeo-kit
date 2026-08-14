@@ -103,16 +103,38 @@ quand les deux doivent coïncider.
 
 ---
 
-## Un champ ajouté à un formulaire n'atteint pas forcément le PDF
+## Le PDF ne lit presque que l'étape `order` — vérifier avant de craindre une perte
 
-**Où** : `structures.py` associe un `structure_version` à un `pdf_version` ; V6, V7, V8 et V9
-partagent `pdf_version=3`.
+**Où** : `src/apps/case/pdf/versions/version_3.py` et `pdf/versions/base.py`. `structures.py`
+associe un `structure_version` à un `pdf_version` ; V6, V7, V8 et V9 partagent `pdf_version=3`.
 
-**Preuve** : règle documentée dans le plugin précédent, non contredite par le code.
-⚠️ **non vérifié** sur les ajouts récents (`facade_paint` sur `HouseRatingsForm`, passage de
-`number_occupants` en obligatoire) — la chaîne formulaire → service → PDF reste à contrôler.
+**Preuve** : inventaire des accès `steps.*` dans `pdf/versions/` — la quasi-totalité porte sur
+`steps.order.*`, plus `home.living_area`, `energy_consumption.living_area` et
+`get_energy_display`. Recherche sur tout `src/apps/case/pdf/` : **zéro occurrence** de
+`house_ratings`, `facade_paint`, `state_roof`, `number_occupants` ou `people`.
 
-**À faire** : après tout ajout de champ, vérifier que la `pdf_version` correspondante le lit,
-sinon la donnée est perdue silencieusement sur le devis client.
+**À faire** : la règle « un champ non lu par la `pdf_version` est perdu » ne vaut que pour un
+champ **destiné** au devis. Le devis restitue la commande et le financement, pas le diagnostic
+de la maison. Avant de conclure à une perte, inventorier ce que la `pdf_version` lit réellement —
+c'est une seule commande et ça évite un chantier inutile.
+
+---
+
+## L'Aperçu du dossier n'est pas versionné : il peut diverger de l'écran
+
+**Où** : `src/apps/case/templates/case/overview.html:68` inclut
+`case/templates/case/includes/savings.html` **sans aucune condition de version**, et cet include
+envoie `people: this.case_data.steps.prime_setup.people` (ligne 48).
+
+**Preuve** : constaté après le basculement de `people` vers `home.number_occupants` dans les trois
+gabarits V9 (`solutions`, `solutions_choice`, `savings`). L'include partagé n'a pas suivi. Or
+`people` alimente le forfait eau chaude de `ConsumptionCalcul.actual()` (108 kWh par personne en
+électricité), donc un écart d'une personne change les économies affichées.
+
+**À faire** : quand une source de donnée change dans les gabarits d'une version, vérifier les
+includes **partagés** de l'Aperçu, pas seulement les gabarits de step. Et ne pas « réparer » un
+include partagé par une expression de repli : la V6 et la V8 possèdent aussi `number_occupants`
+mais calculent délibérément avec `prime_setup.people`. La correction propre est un include
+versionné.
 
 ---
