@@ -49,6 +49,7 @@ invalide.
 
 | Skill | Quand |
 |---|---|
+| `omeo-brief` | à la réception d'un brief, avant toute lecture de code approfondie |
 | `omeo-preconditions` | avant d'écrire du code, quelle que soit la tâche |
 | `omeo-validation` | avant de déclarer terminé, ou face à un échec local suspect |
 | `omeo-endpoint` | création ou modification d'une route dans un `api.py` |
@@ -70,8 +71,6 @@ en tension : sans la seconde, la première produit du remplissage spéculatif.
 restent à ouvrir au fil des rencontres.
 
 ## Reste à faire
-
-- Analyse de brief : séparer ce qui est décidable depuis le code de ce qui exige un arbitrage humain.
 - Registres des autres apps, par ordre de rayon d'impact (`commission`, `sign`, `prime`,
   `contract`, `integration` d'abord).
 - Deux ou trois agents à déclencheur, sur les seules questions falsifiables.
