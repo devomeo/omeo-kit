@@ -57,9 +57,44 @@ Si un fichier de test a été ajouté, le passer aussi à `flake8` / `black` / `
 hors `src/` : la cohérence du dépôt le vaut, mais un échec sur un fichier préexistant qu'on n'a
 pas touché n'est pas un motif pour élargir la MR.
 
+## Passe de consolidation — relire son propre diff d'un bloc
+
+Les commandes ci-dessus attrapent les erreurs de forme, pas les erreurs **d'accumulation**.
+
+Une tâche se construit tour après tour. La duplication, le câblage redondant et le code mort ne
+s'introduisent à aucun instant précis : ils s'installent entre deux demandes. Au moment d'écrire
+le deuxième fichier, rien ne signale qu'il répète le premier. C'est ce qu'un relecteur qui
+découvre le diff entier voit immédiatement, et que l'écriture au fil de l'eau ne voit jamais.
+
+Avant de rendre la main, lire le diff complet de la branche **en une fois** — pas fichier par
+fichier — et chercher :
+
+- **de la duplication introduite par soi-même** : deux méthodes identiques écrites dans la même
+  tâche se factorisent tout de suite. C'est différent d'une abstraction nouvelle par-dessus du
+  code existant, qui elle est interdite en MR feature (voir `../../knowledge/senior-expectations.md`) ;
+- **du câblage redondant** : un appel ajouté « par sécurité » alors qu'un événement existant le
+  déclenchait déjà. Tracer le câblage en place avant d'ajouter le sien ;
+- **du code mort** : garde, état ou variable devenus inutiles au fil des itérations ;
+- **des incohérences entre fichiers** : même donnée lue depuis deux sources, même valeur arrondie
+  de deux façons ;
+- **les corrections antérieures qui n'auraient pas survécu** : sur une longue session, un revert
+  ou une réécriture peut réintroduire un bug déjà corrigé. Vérifier que les correctifs du début
+  sont toujours en place.
+
+## Symptôme ou cause ?
+
+Avant d'accepter un correctif : **explique-t-il tout le comportement observé, ou le fait-il
+seulement disparaître ?**
+
+Un correctif qui consiste à ajouter un rafraîchissement, un `upsert`, un garde ou un second appel
+est un signal : la cause est probablement en amont. Remonter avant de valider.
+
 ## Avant de déclarer terminé
 
 1. Les commandes CI ci-dessus passent.
 2. Les échecs restants sont **nommés** et rattachés à un écart connu du tableau, ou prouvés
    préexistants (`git stash` puis relance).
 3. Un échec qu'on ne sait pas expliquer n'est jamais « sans rapport ». Le prouver ou le corriger.
+4. La passe de consolidation a été faite sur le diff complet.
+5. Ce que le diff ne rend pas évident est dit explicitement. Un relecteur qui demande « c'est
+   quoi ? » ou qui signale un point déjà traité indique que le diff ne se lisait pas seul.

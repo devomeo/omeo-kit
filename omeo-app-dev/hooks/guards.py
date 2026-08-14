@@ -111,6 +111,23 @@ RULES = [
     },
 ]
 
+PRECONDITIONS = (
+    "Préconditions — elles valent pour tout fichier, avant d'écrire :\n"
+    "  1. Citer le fichier:ligne de l'équivalent dans la dernière version ACTIVE. "
+    "C'est la première cause de reprise en revue sur ce projet : une logique écrite "
+    "côté service alors que la version précédente la traitait en template a coûté une "
+    "implémentation, un revert complet et deux allers-retours. Le lire comme modèle, "
+    "mais aussi comme suspect : si le symptôme traverse une primitive existante, "
+    "l'auditer AVANT de patcher autour — patcher autour d'un code supposé correct a "
+    "déjà produit un moins bon correctif que l'audit.\n"
+    "  2. Grepper tout identifiant nouveau. Sans précédent dans le dépôt, soit le "
+    "concept existe sous un autre nom, soit on en introduit un — et cela se signale.\n"
+    "  3. Si une fonction existante sert de modèle, la differ et justifier CHAQUE "
+    "argument omis. Un `user` oublié en recopiant la mauvaise fonction a fait tomber "
+    "un endpoint en 500 sur la majorité des produits réels.\n"
+    "Procédure complète : skill omeo-app-dev:omeo-preconditions"
+)
+
 VALIDATION_HINT = (
     "Validation : la CI applique flake8 src/, black --check src/, isort --check-only src/ et "
     "pytest. Il n'y a AUCUN job mypy, et CLAUDE.md prescrit un périmètre différent de la CI. "
@@ -138,7 +155,7 @@ def main():
     if not matched:
         return 0
 
-    lines = ["[omeo-app-dev] Garde-fous applicables à ce fichier :", ""]
+    lines = ["[omeo-app-dev]", "", PRECONDITIONS, "", "Applicable à ce fichier :", ""]
     seen_files = []
     for rule in matched:
         lines.append(rule["message"])

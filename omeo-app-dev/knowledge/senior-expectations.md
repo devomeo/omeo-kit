@@ -33,6 +33,17 @@ déduplication fait l'objet d'une MR dédiée.
 helper privé de module est acceptable s'il imite un motif déjà présent dans le même fichier
 (`case/cart/services.py` en contient plusieurs : `_normalize_amount`, `_collect_cart_products`).
 
+**Frontière de la règle — important** : elle interdit d'introduire une abstraction nouvelle
+**par-dessus du code existant**. Elle n'autorise pas à laisser **deux méthodes identiques qu'on
+vient d'écrire soi-même** dans la même MR.
+
+**Preuve de la frontière** : sur une autre MR du même projet (Bilan V4), le senior a demandé de
+factoriser deux managers dont les `save` et `next_step_url` étaient strictement identiques et
+tous deux introduits par la MR. Les deux consignes ne se contredisent pas — l'une porte sur
+l'existant qu'on ne touche pas, l'autre sur ce qu'on ajoute.
+
+En cas de doute sur le côté de la frontière où l'on se trouve : le signaler plutôt que trancher.
+
 ---
 
 ## Pas de vocabulaire inventé

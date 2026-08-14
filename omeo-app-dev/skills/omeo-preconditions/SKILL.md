@@ -26,6 +26,19 @@ faut poser une question plutôt qu'inventer.
 > la V6 le faisait en template depuis toujours. Coût : une implémentation, un crash, un revert
 > complet, deux allers-retours, et le senior finissant par écrire lui-même la ligne.
 
+### Modèle à reproduire, mais aussi suspect possible
+
+Lire l'existant ne veut pas dire le croire. Dès qu'un symptôme traverse une primitive existante,
+**l'auditer avant de patcher autour**.
+
+> Cas réel (Bilan V4) : un pin de carte périmé a été corrigé en ajoutant un rafraîchissement
+> autour de `setMarker`, supposé correct. Le bug était dedans — il mettait en cache l'objet
+> Leaflet sous la mauvaise variable. La prudence de ne pas toucher à l'existant a produit un
+> moins bon correctif que l'audit ne l'aurait fait.
+
+Le réflexe inverse — ignorer l'existant — et celui-ci se corrigent par la même discipline :
+ouvrir le code concerné et le lire vraiment, ni pour le contourner ni pour le vénérer.
+
 ## 2. Aucun identifiant nouveau sans précédent
 
 Avant de nommer une variable, un champ, un flag ou une méthode : `grep` le nom dans le dépôt.
