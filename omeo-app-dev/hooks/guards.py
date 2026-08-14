@@ -16,6 +16,24 @@ PLUGIN_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KNOWLEDGE = os.path.join(PLUGIN_ROOT, "knowledge")
 
 
+def source_knowledge():
+    """Dossier knowledge du clone git, seul endroit où une écriture survit.
+
+    Une copie installée vit dans plugins/cache/<marketplace>/<plugin>/<version>/ :
+    chaque version obtient un nouveau dossier, donc tout ce qui y est écrit est
+    perdu à la mise à jour suivante. La source est le clone git, sous
+    plugins/marketplaces/<marketplace>/<plugin>/.
+    """
+    parts = PLUGIN_ROOT.split(os.sep)
+    if len(parts) >= 5 and parts[-4] == "cache":
+        candidate = os.sep.join(
+            parts[:-4] + ["marketplaces", parts[-3], parts[-2], "knowledge"]
+        )
+        if os.path.isdir(candidate):
+            return candidate
+    return None
+
+
 def registry(name):
     return os.path.join(KNOWLEDGE, name)
 
@@ -131,10 +149,23 @@ def main():
         lines.append("")
 
     if seen_files:
-        lines.append("Registre des pièges déjà payés (lire avant d'écrire) :")
+        lines.append("Registre des pièges déjà payés (LIRE avant d'écrire) :")
         for name in seen_files:
             lines.append("  - %s" % registry(name))
         lines.append("")
+        source = source_knowledge()
+        if source:
+            lines.append(
+                "Clause d'évolution — si cette tâche fait découvrir un piège non "
+                "consigné, l'ÉCRIRE dans le clone git, jamais dans les chemins "
+                "ci-dessus : une copie installée est jetée à la mise à jour suivante."
+            )
+            lines.append("  écrire dans : %s" % source)
+            lines.append(
+                "  puis commiter et pousser, sinon la trouvaille reste locale et "
+                "disparaît."
+            )
+            lines.append("")
 
     lines.append(VALIDATION_HINT)
     sys.stdout.write("\n".join(lines))

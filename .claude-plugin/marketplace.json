@@ -10,27 +10,10 @@
   },
   "plugins": [
     {
-      "name": "omeo-kit",
-      "source": "./omeo-kit",
-      "description": "Équipe d'agents et de skills pour intervenir en sécurité et sans régression sur le CRM Omeo.app, et réduire la dépendance au développeur senior.",
-      "version": "0.1.0",
-      "author": {
-        "name": "Équipe Omeo"
-      },
-      "keywords": [
-        "django",
-        "crm",
-        "security",
-        "permissions",
-        "code-review",
-        "onboarding"
-      ]
-    },
-    {
       "name": "omeo-app-dev",
       "source": "./omeo-app-dev",
       "description": "Garde-fous, préconditions et registre de pièges pour développer sur le CRM Omeo.app. Empêche pendant l'écriture plutôt que de relire après.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "Équipe Omeo"
       },

@@ -31,6 +31,33 @@ Déclencheurs qui obligent à écrire une entrée :
 - une piste envisagée puis écartée pour une raison structurelle — l'écarter une fois suffit,
   la prochaine session ne doit pas refaire l'enquête.
 
+## Où écrire — la partie qui décide si ça sert à quelque chose
+
+Le plugin existe en deux exemplaires sur une machine :
+
+```
+~/.claude/plugins/marketplaces/<marketplace>/<plugin>/     ← clone git : LA SOURCE
+~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/  ← copie installée : JETABLE
+```
+
+**Écrire toujours dans le clone git.** Chaque version s'installe dans un dossier neuf : ce qui
+est écrit dans une copie installée est perdu à la mise à jour suivante, sans erreur ni
+avertissement. Le chemin que le hook affiche sert à **lire** ; il rappelle lui-même où écrire.
+
+Une entrée n'est acquise pour l'équipe qu'une fois **commitée et poussée**. Tant qu'elle reste
+dans le clone local, elle ne vaut que pour une machine.
+
+Séquence, à faire dans la foulée de la tâche :
+
+1. écrire l'entrée dans `<clone git>/knowledge/<domaine>.md` ;
+2. commiter et pousser ;
+3. incrémenter la version dans `.claude-plugin/plugin.json` **et** dans l'entrée du plugin
+   au sein de `marketplace.json` si l'ajout est significatif — les deux doivent concorder,
+   `claude plugin validate` le vérifie.
+
+Ne jamais laisser de modification non commitée dans le clone : c'est un dépôt git, et une mise
+à jour de la marketplace peut échouer dessus.
+
 ## Clause de preuve — tout aussi obligatoire
 
 **Mieux vaut du vide que du faux.** Une entrée n'est admise que si elle repose sur une
