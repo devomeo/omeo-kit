@@ -72,7 +72,7 @@ def ma_route(request, data: MonSchema = Query(...)):
 - `url_name=` obligatoire, IDs en query params.
 - **Passer `user=request.user` au service** dès que celui-ci résout un prix, une permission ou une
   donnée filtrée. Un `user` oublié ne provoque pas toujours une 403 : il peut faire tomber le
-  service en 500 (voir `knowledge/case-cart.md`, entrée `get_default_price`).
+  service en 500 (voir `../../knowledge/case-cart.md`, entrée `get_default_price`).
 
 ## 4. Test d'isolation — obligatoire
 

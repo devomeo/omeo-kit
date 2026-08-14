@@ -58,10 +58,14 @@ Vérifier deux choses, dans cet ordre :
 
 ## Pièges de rendu et de validation
 
-Consulter `knowledge/case-steps.md` avant de modifier un formulaire ou un template : le filtre
-`default` de Django qui transforme `initial=0` en chaîne vide, l'option `(0, "")` qui rend
-`required=True` inopérant, l'absence de garantie qu'une étape amont ait été enregistrée. Chacun
-de ces points a déjà produit un bug sur ce projet.
+Lire `../../knowledge/case-steps.md` (registre du plugin) avant de modifier un formulaire ou un
+template : le filtre `default` de Django qui transforme `initial=0` en chaîne vide, l'option
+`(0, "")` qui rend `required=True` inopérant, l'absence de garantie qu'une étape amont ait été
+enregistrée, la divergence possible avec les includes non versionnés de l'Aperçu. Chacun de ces
+points a déjà produit un bug sur ce projet.
+
+Lire aussi `../../knowledge/senior-expectations.md` : plusieurs attentes de revue portent
+directement sur les gabarits versionnés.
 
 ## Procédure
 

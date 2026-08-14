@@ -32,6 +32,19 @@ pratique du senior **contredit** la doc écrite. Ce n'est pas de la redite, c'es
 
 ## Contenu
 
+### Hooks — `hooks/guards.py`
+
+En `PreToolUse` sur `Edit`/`Write`/`MultiEdit` : le contenu utile est injecté **avant**
+l'écriture, pas après. C'est la différence décisive avec le plugin précédent, dont le hook
+`PostToolUse` se contentait de **nommer** une skill — nommée trois fois, jamais ouverte.
+
+Cinq règles, déclenchées sur le chemin du fichier : route API, étape versionnée, gabarit
+d'étape versionné, signal, calcul métier. Chaque message porte le piège concret, pas un renvoi.
+Le hook fournit aussi le **chemin absolu** des fichiers du registre à lire.
+
+Silencieux quand aucune règle ne correspond, et ne bloque jamais. Robuste à une entrée vide ou
+invalide.
+
 ### Skills
 
 | Skill | Quand |
@@ -58,7 +71,6 @@ restent à ouvrir au fil des rencontres.
 
 ## Reste à faire
 
-- Hooks `PreToolUse` pour rendre les préconditions incontournables plutôt que consultables.
 - Analyse de brief : séparer ce qui est décidable depuis le code de ce qui exige un arbitrage humain.
 - Registres des autres apps, par ordre de rayon d'impact (`commission`, `sign`, `prime`,
   `contract`, `integration` d'abord).

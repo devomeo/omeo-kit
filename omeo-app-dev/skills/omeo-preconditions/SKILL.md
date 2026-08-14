@@ -61,3 +61,17 @@ Quand deux consignes du projet se contredisent, le dire au lieu de trancher seul
 > Cas réel : la règle de confinement V9 (« tout gabarit appartient à `version_9` ») contre la règle
 > de non-duplication. Le conflit a été résolu silencieusement en faveur de la première, ce qui a
 > produit un template identique à `common`, supprimé en revue.
+
+## Le registre du plugin
+
+Avant de travailler sur un domaine couvert, lire le fichier correspondant dans
+`../../knowledge/` — ce sont les pièges déjà payés, chacun avec sa preuve :
+
+- `../../knowledge/senior-expectations.md` — les attentes appliquées en revue, **y compris celles
+  qui contredisent `docs/code-review.md`**. À lire quelle que soit la tâche.
+- `../../knowledge/case-cart.md` — prix, primes, panier.
+- `../../knowledge/case-steps.md` — déballes versionnées, formulaires, gabarits.
+
+Et respecter la **clause d'évolution** décrite dans `../../knowledge/README.md` : dès qu'une
+situation rencontrée permet de remplir une case vide du registre, la remplir avant de clore la
+tâche — sous réserve de la clause de preuve.
