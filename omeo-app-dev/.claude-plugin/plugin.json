@@ -1,0 +1,16 @@
+{
+  "name": "omeo-app-dev",
+  "version": "0.1.0",
+  "description": "Garde-fous, préconditions et registre de pièges pour développer sur le CRM Omeo.app. Empêche pendant l'écriture plutôt que de relire après, et accumule le savoir vérifié qui n'est ni dans le code ni dans CLAUDE.md.",
+  "author": {
+    "name": "Équipe Omeo"
+  },
+  "keywords": [
+    "django",
+    "crm",
+    "guardrails",
+    "preconditions",
+    "knowledge-base",
+    "security"
+  ]
+}
