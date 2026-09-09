@@ -38,8 +38,8 @@ En `PreToolUse` sur `Edit`/`Write`/`MultiEdit` : le contenu utile est injecté *
 l'écriture, pas après. C'est la différence décisive avec le plugin précédent, dont le hook
 `PostToolUse` se contentait de **nommer** une skill — nommée trois fois, jamais ouverte.
 
-Cinq règles, déclenchées sur le chemin du fichier : route API, étape versionnée, gabarit
-d'étape versionné, signal, calcul métier. Chaque message porte le piège concret, pas un renvoi.
+Six règles, déclenchées sur le chemin du fichier : route API, étape versionnée, gabarit
+d'étape versionné, signal, calcul métier, grille tarifaire de catalogue. Chaque message porte le piège concret, pas un renvoi.
 Le hook fournit aussi le **chemin absolu** des fichiers du registre à lire.
 
 Silencieux quand aucune règle ne correspond, et ne bloque jamais. Robuste à une entrée vide ou
@@ -53,7 +53,7 @@ invalide.
 | `omeo-preconditions` | avant d'écrire du code, quelle que soit la tâche |
 | `omeo-validation` | avant de déclarer terminé, ou face à un échec local suspect |
 | `omeo-endpoint` | création ou modification d'une route dans un `api.py` |
-| `omeo-business-calc` | `product/`, `case/cart/`, `case/prime/`, `case/loan/` |
+| `omeo-business-calc` | `product/`, `case/cart/`, `case/prime/`, `case/loan/` — dont `product/catalogs/` |
 | `omeo-signal` | tout `signals.py`, `core/metrics.py`, `apps.py::ready()` |
 | `omeo-step-version` | `case/steps/` — formulaires, managers, gabarits, `structures.py` |
 
@@ -67,8 +67,8 @@ d'évolution** (une case vide qu'une situation permet de remplir doit l'être av
 tâche) et la **clause de preuve** (aucune entrée sans observation vérifiée). Elles se tiennent
 en tension : sans la seconde, la première produit du remplissage spéculatif.
 
-État actuel : `case-cart`, `case-steps` et `senior-expectations` sont nourris. Les autres domaines
-restent à ouvrir au fil des rencontres.
+État actuel : `case-cart`, `case-steps`, `product-catalogs` et `senior-expectations` sont nourris.
+Les autres domaines restent à ouvrir au fil des rencontres.
 
 ## Reste à faire
 - Registres des autres apps, par ordre de rayon d'impact (`commission`, `sign`, `prime`,

@@ -49,7 +49,7 @@ et non sur `Product`), évalué par `src/apps/product/managers.py` après substi
 - **Renommer un champ d'un schéma de panier casse les paniers existants** : `Cart.products` et
   `Cart.packs` sont des `JSONField` figés au moment de la vente. Prévoir la rétro-compatibilité.
 - **Ne pas réécrire un calcul de prix.** Instancier un `CartSchema` déclenche
-  `PriceManager.compute` via un `@model_validator(mode="after")` (`case/cart/schemas.py:402`) et
+  `PriceManager.compute` via un `@model_validator(mode="after")` (`case/cart/schemas.py:435`) et
   fournit TVA, pose et primes. Voir `../../knowledge/case-cart.md` (registre du plugin), qui
   recense aussi les pièges de résolution de prix déjà payés.
 

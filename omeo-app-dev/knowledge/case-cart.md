@@ -77,7 +77,7 @@ les confondre. Avant Aides, les deux valent 1.
 
 ## Instancier un `CartSchema` déclenche le calcul complet des montants
 
-**Où** : `src/apps/case/cart/schemas.py:402`, `@model_validator(mode="after")`.
+**Où** : `src/apps/case/cart/schemas.py:435`, `@model_validator(mode="after")`.
 
 **Preuve** : lecture ; exploité pour chiffrer un panier en mémoire sans le sauvegarder.
 

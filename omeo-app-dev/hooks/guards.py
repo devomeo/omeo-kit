@@ -109,6 +109,26 @@ RULES = [
         ),
         "files": ["case-cart.md"],
     },
+    {
+        "match": r"/product/catalogs/.*\.py$",
+        "skill": "omeo-app-dev:omeo-business-calc",
+        "message": (
+            "Grille tarifaire menuiserie. Les axes NE SONT PAS écrits : fetch_pricing indexe la "
+            "matrice par position, et les bornes h_min/w_min déclarées au-dessus ne les "
+            "décrivent pas. Le Fixe déclare h_min=800 pour une matrice qui commence à 400 — un "
+            "fixe est facturé au prix d'un modèle 400 mm plus bas. Se fier à la matrice, jamais "
+            "aux bornes.\n"
+            "Après tout collage depuis Excel, recalculer colonne par colonne l'écart au prix "
+            "d'achat : une colonne saine donne une constante, une colonne qui dérive est un "
+            "collage raté. Deux colonnes sont restées à l'ancien tarif pendant huit mois sans "
+            "qu'aucune pipeline ne bronche — AUCUN test ne vérifie une valeur de prix.\n"
+            "40 des 84 matrices sont inatteignables (price_type != DEFAULT) : vérifier le "
+            "price_type avant de s'alarmer d'une anomalie.\n"
+            "Un changement ici est rétroactif sur tous les dossiers non validés, sans date "
+            "d'effet."
+        ),
+        "files": ["product-catalogs.md"],
+    },
 ]
 
 PRECONDITIONS = (
