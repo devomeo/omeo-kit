@@ -38,17 +38,34 @@ En `PreToolUse` sur `Edit`/`Write`/`MultiEdit` : le contenu utile est injecté *
 l'écriture, pas après. C'est la différence décisive avec le plugin précédent, dont le hook
 `PostToolUse` se contentait de **nommer** une skill — nommée trois fois, jamais ouverte.
 
-Six règles, déclenchées sur le chemin du fichier : route API, étape versionnée, gabarit
-d'étape versionné, signal, calcul métier, grille tarifaire de catalogue. Chaque message porte le piège concret, pas un renvoi.
-Le hook fournit aussi le **chemin absolu** des fichiers du registre à lire.
+Quinze règles. Déclenchées sur le chemin du fichier : route API, étape versionnée, gabarit
+d'étape versionné, signal, calcul métier, grille tarifaire de catalogue, modèle, admin, migration,
+test, JS statique. Déclenchées sur le contenu écrit : appel d'API externe, bloc `<script>` long
+dans un gabarit, défilement ou swipe écrit en JS, classes Tailwind. Chaque message porte le piège
+concret, pas un renvoi. Le hook fournit aussi le **chemin absolu** des fichiers du registre à lire.
+
+Le message passe par `hookSpecificOutput.additionalContext` : en `PreToolUse`, un texte brut sur
+stdout n'est montré qu'à l'utilisateur, jamais au modèle (c'était le cas jusqu'à la 0.5.0).
+
+Également déclenché sur `Bash`, pour la seule commande `makemigrations` : les migrations sont
+générées en ligne de commande, jamais écrites à la main.
 
 Silencieux quand aucune règle ne correspond, et ne bloque jamais. Robuste à une entrée vide ou
 invalide.
+
+### Hook de début de session — `hooks/session_start.py`
+
+En `SessionStart`, et seulement dans le dépôt du CRM (présence de `src/manage.py` et
+`src/apps/case/`) : trois lignes qui rappellent que la fiche de la tâche dans la gestion de projet
+Notion se lit au début et se met à jour avant de déclarer terminé. C'est la seule chose injectée
+en début de session : une obligation de suivi, pas une procédure — les procédures restent dans les
+skills, chargées quand elles servent.
 
 ### Skills
 
 | Skill | Quand |
 |---|---|
+| `omeo-notion` | début et fin de chaque tâche — gestion de projet, documentation de l'app, Documentation Dev |
 | `omeo-brief` | à la réception d'un brief, avant toute lecture de code approfondie |
 | `omeo-preconditions` | avant d'écrire du code, quelle que soit la tâche |
 | `omeo-validation` | avant de déclarer terminé, ou face à un échec local suspect |
@@ -56,6 +73,7 @@ invalide.
 | `omeo-business-calc` | `product/`, `case/cart/`, `case/prime/`, `case/loan/` — dont `product/catalogs/` |
 | `omeo-signal` | tout `signals.py`, `core/metrics.py`, `apps.py::ready()` |
 | `omeo-step-version` | `case/steps/` — formulaires, managers, gabarits, `structures.py` |
+| `omeo-front` | gabarits HTML, `src/static/js/`, classes Tailwind — Alpine, CSS compilé, vérification à l'écran |
 
 ### Registre — `knowledge/`
 

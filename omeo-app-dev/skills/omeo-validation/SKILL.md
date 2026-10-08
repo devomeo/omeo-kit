@@ -57,6 +57,15 @@ Si un fichier de test a été ajouté, le passer aussi à `flake8` / `black` / `
 hors `src/` : la cohérence du dépôt le vaut, mais un échec sur un fichier préexistant qu'on n'a
 pas touché n'est pas un motif pour élargir la MR.
 
+## Un test prouve un comportement, pas la présence d'une ligne
+
+Préférer un test qui vérifie un **comportement** — le rendu d'une page, la réponse d'une route — à
+un test qui cherche une chaîne dans le code source ou le gabarit. Réserver ce dernier à un bug
+déjà rencontré, pour l'empêcher de revenir.
+
+> Cas réel (ticket #1485) : neuf tests de gabarit ne vérifiaient que la présence de lignes. Les
+> deux bugs du plein écran ont été trouvés à l'écran, pas par les tests.
+
 ## Passe de consolidation — relire son propre diff d'un bloc
 
 Les commandes ci-dessus attrapent les erreurs de forme, pas les erreurs **d'accumulation**.
@@ -89,6 +98,26 @@ seulement disparaître ?**
 Un correctif qui consiste à ajouter un rafraîchissement, un `upsert`, un garde ou un second appel
 est un signal : la cause est probablement en amont. Remonter avant de valider.
 
+## Troisième itération sur un même écran : repartir du besoin
+
+C'est la même question que la précédente, à l'échelle d'une conception plutôt que d'un correctif.
+La passe de consolidation trouve ce qui est redondant dans le diff ; elle ne demande pas si le
+mécanisme lui-même est le bon.
+
+Dès la troisième itération sur un même écran ou un même comportement, s'arrêter et :
+
+1. reformuler le besoin final, tel qu'il est maintenant connu ;
+2. décrire le mécanisme le plus simple qui le couvre — en commençant par le natif du navigateur
+   (voir la skill **omeo-front**) ;
+3. lister ce qui, dans le code actuel, n'est plus nécessaire avec ce mécanisme ;
+4. proposer la refonte avant de continuer à empiler.
+
+> Cas réel (ticket #1485) : pagination animée, puis swipe manuel, puis défilement natif sur
+> téléphone, puis boutons — quatre mécanismes superposés, que le défilement natif seul remplaçait.
+
+Voir aussi « Modèle à reproduire, mais aussi suspect possible » dans la skill
+**omeo-preconditions** : auditer ce qu'on a déjà écrit vaut autant que d'auditer l'existant.
+
 ## Avant de déclarer terminé
 
 1. Les commandes CI ci-dessus passent.
@@ -96,5 +125,9 @@ est un signal : la cause est probablement en amont. Remonter avant de valider.
    préexistants (`git stash` puis relance).
 3. Un échec qu'on ne sait pas expliquer n'est jamais « sans rapport ». Le prouver ou le corriger.
 4. La passe de consolidation a été faite sur le diff complet.
-5. Ce que le diff ne rend pas évident est dit explicitement. Un relecteur qui demande « c'est
+5. Un comportement front a été vérifié dans le navigateur, onglet au premier plan — sinon le dire
+   (voir la skill **omeo-front**).
+6. La fiche de la tâche dans la gestion de projet Notion est à jour : statut, livré, décisions,
+   points ouverts, validation — y compris ce qui n'a pas pu être vérifié (skill **omeo-notion**).
+7. Ce que le diff ne rend pas évident est dit explicitement. Un relecteur qui demande « c'est
    quoi ? » ou qui signale un point déjà traité indique que le diff ne se lisait pas seul.

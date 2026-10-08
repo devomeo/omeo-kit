@@ -23,6 +23,13 @@ jamais dû être posée — elle aurait dû être lue.
 
 La valeur de cette analyse tient à la netteté de la frontière, pas au nombre de questions.
 
+## Étape 0 — ouvrir la fiche de la tâche
+
+Retrouver ou créer la fiche de la tâche dans la gestion de projet Notion, et la lire : décisions
+déjà prises, points ouverts, retours de revue. Si le brief touche un module, ouvrir aussi son
+analyse dans la Documentation Notion — elle aide à vérifier les affirmations de l'étape 1, mais
+le code fait foi en cas d'écart. Liens et procédure : skill **omeo-notion**.
+
 ## Étape 1 — vérifier les affirmations factuelles du brief
 
 **Un brief peut se tromper sur l'application.** Ce n'est ni rare ni grave, mais agir dessus l'est.
@@ -78,6 +85,9 @@ Une liste courte. Pour chaque point :
 - ce qui a été tenté pour la résoudre sans humain, et pourquoi ça ne suffit pas ;
 - une recommandation quand elle existe — un arbitrage est plus rapide qu'une question ouverte ;
 - ce que ça bloque, et ce que ça ne bloque pas.
+
+Consigner aussi ces points dans la fiche de la tâche (points ouverts), pour qu'ils survivent à la
+session.
 
 ## Étape 5 — ne pas attendre la réponse
 

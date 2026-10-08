@@ -1,7 +1,7 @@
 # Pièges — case/steps, déballes versionnées
 
 > Statut : fourni
-> Dernière mise à jour : 2026-08-14
+> Dernière mise à jour : 2026-10-08
 
 Lire `README.md` avant d'ajouter une entrée : clause d'évolution et clause de preuve.
 
@@ -138,3 +138,67 @@ mais calculent délibérément avec `prime_setup.people`. La correction propre e
 versionné.
 
 ---
+
+## Une `order_date` périmée survit à un changement de `order_date_choice`
+
+**Où** : `src/apps/case/steps/forms/common.py` (`OrderForm.clean`) et les gabarits
+`case_steps/*/order.html`, où l'input date est masqué par `x-show="order_date"` mais reste lié
+par `x-model` et donc posté.
+
+**Preuve** : sonde exécutée dans `tests/case/steps/` — un POST portant
+`order_date_choice="created_at"` **et** `order_date="18/09/2026"` est valide, et
+`cleaned_data["order_date"]` conserve le 18/09. `AbstractStepManager.save` écrit `cleaned_data`
+tel quel dans `Step.data`, donc la date périmée est persistée.
+
+**À faire** : côté lecture (PDF, Yousign), toujours piloter par `order_date_choice` et ne lire
+`order_date` que pour les choix qui la portent (`today`, `other`). Lire `order_date` en premier
+« si elle existe » ferait afficher une date abandonnée sur un BDC en « Date de création ».
+
+---
+
+## Un `@click.outside` dans un bloc `x-if` ouvert par un clic se referme sur ce même clic
+
+**Où** : `case_steps/version_9/partials/product_carousel.html` — le plein écran du carrousel,
+passé de `x-show` à `<template x-if="isFullScreen">` pour ne charger les images qu'à l'ouverture.
+
+**Preuve** : constaté en recette le 2026-10-05 — au clic sur l'image principale, rien ne s'affichait.
+Le gestionnaire de clic rend le bloc `x-if`, Alpine (3.10.5) l'initialise avant que le clic
+atteigne `document`, et le `@click.outside` qu'il vient d'enregistrer reçoit ce même clic et
+referme. Avec `x-show`, l'élément existait déjà mais caché, et `.outside` ignore un élément caché :
+le problème n'apparaissait pas. Corrigé par `@click.stop` sur le déclencheur, vérifié dans le
+navigateur (ouverture, flèches, bouton fermer, clic extérieur).
+
+**À faire** : en remplaçant un `x-show` par un `x-if` pour économiser du chargement, vérifier
+les `@click.outside` du bloc. Mettre `.stop` sur le clic qui l'ouvre.
+
+---
+
+## Un `fixed inset-0` placé sous un parent `transform` ne couvre plus l'écran
+
+**Où** : `case_steps/version_9/solutions.html` — la piste de pagination animée par
+`transform: translateX(...)`, qui contient les cards et donc le plein écran du carrousel
+(`version_9/partials/product_carousel.html`).
+
+**Preuve** : constaté en recette le 2026-10-05 — après l'ajout de la piste coulissante, l'image
+cliquée restait « bloquée dans le carrousel ». Un ancêtre avec `transform` devient le bloc
+conteneur des descendants `position: fixed`, et l'`overflow-hidden` de la piste les rognait.
+Corrigé par `<template x-teleport="body">` (disponible dans Alpine 3.10.5) : vérifié dans le
+navigateur, l'overlay est enfant de `<body>`, couvre 1920×936 sur un viewport de 1920×936, et
+est retiré de `<body>` à la fermeture.
+
+**À faire** : toute modale ou overlay `fixed` rendu dans un conteneur animé par `transform`
+(ou `filter`, `perspective`) doit être téléporté vers `body`.
+
+---
+
+## `get_settings()` renvoie `None` au premier appel sur une base vide
+
+**Où** : `src/apps/case/services.py:108` (`get_settings`), appelé par `SolutionsStepManager.setup()`
+(`managers/version_9.py:181`).
+
+**Preuve** : rendu de l'étape Solutions V9 via le client de test sans ligne `Settings` →
+`AttributeError: 'NoneType' object has no attribute 'default_kwh_price'`. La fonction crée la
+ligne mais renvoie la variable lue avant création.
+
+**À faire** : dans un test qui rend une étape Solutions, créer `Settings.objects.create()` avant
+la requête. Ne pas corriger la fonction dans une MR feature sans le signaler.

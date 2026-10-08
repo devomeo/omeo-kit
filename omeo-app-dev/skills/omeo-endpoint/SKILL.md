@@ -23,6 +23,23 @@ face, `product` (32 routes), `crm`, `prospect`, `contract`, `project` sont couve
 Le voisinage d'une nouvelle route de `case/*` est donc précisément le sous-ensemble non couvert.
 S'y aligner reconduit le trou au lieu de le combler.
 
+## Avant de créer une route : étendre l'existante
+
+**Une ressource, une route, qu'on fait évoluer.** Une route `items_page` créée à côté d'
+`items_list` a été refusée en revue : « Pourquoi ne pas mettre la pagination dans item_list
+directement ? », puis « Tu peux mettre à jour les autres versions ? ».
+
+1. Chercher une route qui sert déjà la même ressource (même service, même schéma de sortie).
+2. Si elle existe, la faire évoluer. Inventorier ses appelants avant de changer sa réponse :
+   `grep -rn "<url_name>" src/` — gabarits de **toutes** les versions de déballe compris. La règle
+   de confinement d'une version porte sur ses fichiers d'étapes, pas sur une API partagée : mettre
+   à jour les autres versions fait partie du changement.
+3. **Une route par usage.** Parcourir un catalogue (liste filtrée, paginée) et charger des éléments
+   précis par leurs identifiants (« detail », non paginée) sont deux routes. Charger par
+   identifiants à travers une liste paginée tronque le résultat au-delà de la taille de page. Une
+   route « detail » n'est pas une abstraction nouvelle au sens de
+   `../../knowledge/senior-expectations.md`.
+
 ## 1. Schéma (`schemas.py`)
 
 Schéma d'entrée et de sortie. Toute la validation est centralisée ici.
@@ -67,12 +84,28 @@ def ma_route(request, data: MonSchema = Query(...)):
   authentifié, 403 si la permission manque.
 - `has_perm` ne contrôle **que** le niveau modèle. Il ne remplace pas le filtrage propriétaire du
   service. Les deux sont nécessaires.
-- Codenames réels du projet, à imiter : `case.view_case`, `case.sign_case`, et les permissions
-  personnalisées de type `case.create_version_9`.
+- **Permissions Django par défaut d'abord** : `view_<modèle>`, `change_<modèle>`… existent déjà
+  pour chaque modèle (`case.view_case`). Une permission personnalisée (`case.sign_case`,
+  `case.create_version_9`, `prospect.view_team_marker`) ne se crée que si le droit ne correspond à
+  aucune des quatre actions, et se justifie dans le compte rendu. Deux permissions maison ont été
+  refusées en revue au profit de `view_radartarget` / `change_radartarget`.
 - `url_name=` obligatoire, IDs en query params.
 - **Passer `user=request.user` au service** dès que celui-ci résout un prix, une permission ou une
   donnée filtrée. Un `user` oublié ne provoque pas toujours une 403 : il peut faire tomber le
   service en 500 (voir `../../knowledge/case-cart.md`, entrée `get_default_price`).
+
+### Pagination
+
+Mesuré sur django-ninja 1.4.5 (`ninja/pagination.py`, `PageNumberPagination`) :
+
+- `@paginate` change la réponse en `{"items": [...], "count": N}`. Tous les appelants de la route
+  sont à adapter — inventaire de la section « Avant de créer une route ».
+- Le `page_size` du décorateur n'est pas plafonné (`prospect/api.py` sert 200 marqueurs par page).
+  En revanche, un `?page_size=` **demandé par le client** est ramené **silencieusement** à
+  `max_page_size`, qui vaut 100 par défaut (`NINJA_MAX_PER_PAGE_SIZE`). Le catalogue actif dépasse
+  déjà ce seuil (102 produits mesurés le 07/10/2026).
+- Si un appelant doit pouvoir demander plus, relever `max_page_size` sur la route concernée
+  (`@paginate(PageNumberPagination, page_size=20, max_page_size=…)`), pas le réglage global.
 
 ## 4. Test d'isolation — obligatoire
 
@@ -109,4 +142,4 @@ divergent de la CI.
 
 ## 6. Revue
 
-Relire le diff contre les points 0 à 4. Un humain valide le merge.
+Relire le diff contre la section « Avant de créer une route » et les points 0 à 4. Un humain valide le merge.
