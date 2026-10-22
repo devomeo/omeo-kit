@@ -255,3 +255,23 @@ réutiliser pour autre chose. Nommer d'après ce que l'objet couvre réellement,
 premier usage du brief. Le libellé visible (`verbose_name`, titres d'interface) suit le
 vocabulaire métier donné par le senior. Un renommage s'applique à toute la chaîne, pas au seul
 modèle.
+
+---
+
+## Liste de cases métier : une ligne par case et un catalogue en code, pas N colonnes booléennes
+
+**Preuve** : MR #1412, retours sur `constants.py` et `services.py`. 18 `BooleanField` sur un modèle
+1-to-1 refusés : « la liste est recopiée 4 fois (modèle, schémas, constante, gabarit), corriger un
+libellé coûte une migration `AlterField`, et la trace qui/quand n'existe pas ». Libellés lus via
+`Model._meta.get_field(name).verbose_name` refusés aussi : API privée Django, appelée à chaque
+rendu de page, et une faute de frappe lève `FieldDoesNotExist`, donc une 500 sur **toute** la page.
+Une section au libellé vide (`"label": ""`) a également été refusée : elle produit un séparateur
+sans titre qui ne distingue rien pour l'utilisateur.
+
+**À faire** : pour une liste de cases ou de tâches métier, utiliser un modèle de ligne
+`(<parent>, key, checked_at, checked_by)` avec `UniqueConstraint(<parent>, key)`. Le catalogue
+(clé, libellé, onglet, section) va en `@dataclass(frozen=True)` dans `constants.py`. L'API reçoit
+`{"key": str, "checked": bool}` et valide la clé contre le catalogue (`field_validator`, donc une
+422). Pas de `choices=` sur `key`, sinon chaque changement de libellé redevient un `AlterField`.
+Le gabarit regroupe le catalogue avec `{% regroup %}`, sans fonction de mise en forme côté
+service. Toute section mise à part porte un titre ; sinon, elle est fusionnée avec la précédente.
