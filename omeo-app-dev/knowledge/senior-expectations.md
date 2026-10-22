@@ -256,6 +256,13 @@ premier usage du brief. Le libellé visible (`verbose_name`, titres d'interface)
 vocabulaire métier donné par le senior. Un renommage s'applique à toute la chaîne, pas au seul
 modèle.
 
+Revue d'ensemble de la même MR : chaque identifiant porte le préfixe du concept parent, à tous les
+niveaux (`PROJECT_CHECKLIST_…`, `get_project_checklist_…`, contexte `project_checklist_…`, état
+Alpine `projectChecklist` et `toggle/load/saveProjectChecklist`, fichier
+`tests/project/test_project_checklist.py`). Un nom nu (`checklist`, `CHECKLIST_ITEMS`) est refusé.
+Une dataclass de catalogue ne reprend pas le nom du modèle (`ProjectChecklistEntry` et non
+`ChecklistItem` à côté de `ProjectChecklistItem`).
+
 ---
 
 ## Liste de cases métier : une ligne par case et un catalogue en code, pas N colonnes booléennes
