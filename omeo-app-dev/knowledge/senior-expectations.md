@@ -147,18 +147,21 @@ dans ce cas.
 
 ---
 
-## `AbstractModel` seulement si le soft-delete sert — contredit `CLAUDE.md`
+## Hériter d'`AbstractModel` comme le reste de l'app, et filtrer les archivés s'ils existent
 
-**Preuve** : MR Radar, retour 2. Un logement archivé depuis l'admin restait affiché sur la carte :
-le modèle héritait d'`AbstractModel`, donc d'un `status` d'archivage, que le code Radar ne
-filtrait jamais.
+**Preuve** : MR #1412 (checklist projet), retour 2 — « le modèle n'hérite pas d'`AbstractModel`
+comme le reste de l'app ». Le modèle avait été écrit en `models.Model` + UUID en appliquant
+l'ancienne version de cette règle, tirée du retour 2 de la MR Radar : un logement archivé depuis
+l'admin restait affiché sur la carte, faute de filtre sur `status`.
 
 **Ce que dit la doc** : `CLAUDE.md` — « All models inherit from `AbstractModel` » ; idem
-`docs/architecture.md` et `docs/domain.md`.
+`docs/architecture.md` et `docs/domain.md`. Le senior le confirme.
 
-**À faire** : hériter d'`AbstractModel` seulement si le code lit réellement `status` (archivage,
-soft-delete). Sinon `models.Model` avec les seuls champs utiles. Si l'on hérite quand même,
-chaque requête de lecture doit filtrer les archivés.
+**À faire** : tout nouveau modèle hérite d'`AbstractModel` (avec `class Meta:` simple, comme les
+modèles voisins). Le piège Radar reste valable : si un objet peut être archivé (admin enregistré,
+`delete()` appelé), chaque requête de lecture doit filtrer `status=ARCHIVE`. Si rien ne peut
+l'archiver (modèle hors admin, suppression uniquement par CASCADE), le dire et ne pas ajouter de
+filtre.
 
 ---
 
@@ -235,3 +238,20 @@ marquée appliquée en base locale : demander au développeur avant de l'aligner
 peuvent être perdues.
 
 ---
+
+---
+
+## Nommer d'après le périmètre réel, sans collision avec un concept existant de l'app
+
+**Preuve** : MR #1412, retour 2 — `ProjectDocumentChecklist` / `related_name="document_checklist"`
+refusés : « la checklist est globale au projet, et `ProjectDocument` / `ProjectDocumentGroup`
+existent déjà dans cette app, la confusion est garantie ». Renommé `ProjectChecklist`,
+`related_name="checklist"`, `verbose_name="Tâches"`, et « même remarque pour tout le reste du
+code » (schémas, services, routes, `url_name`, état Alpine, factory, fichier de test).
+
+**À faire** : avant de nommer un modèle, grepper les modèles de l'app (`class .*\(` dans
+`models.py`). Si un mot du nom désigne déjà un autre concept (Document, Group, Step…), ne pas le
+réutiliser pour autre chose. Nommer d'après ce que l'objet couvre réellement, pas d'après le
+premier usage du brief. Le libellé visible (`verbose_name`, titres d'interface) suit le
+vocabulaire métier donné par le senior. Un renommage s'applique à toute la chaîne, pas au seul
+modèle.

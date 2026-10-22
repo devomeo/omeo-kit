@@ -174,9 +174,10 @@ RULES = [
         "match": r"/models\.py$",
         "skill": None,
         "message": (
-            "Modèle. (1) Hériter d'AbstractModel seulement si le code lit réellement son status "
-            "(archivage, soft-delete) — sinon models.Model avec les seuls champs utiles ; un "
-            "logement archivé restait affiché sur la carte Radar faute de filtre sur status. "
+            "Modèle. (1) Hériter d'AbstractModel comme le reste de l'app (retour MR #1412) ; si "
+            "l'objet peut être archivé (admin, delete()), chaque lecture filtre status=ARCHIVE — "
+            "un logement archivé restait affiché sur la carte Radar. Nom : grepper les modèles de "
+            "l'app, ne pas réutiliser un mot qui désigne déjà un autre concept (Document…). "
             "(2) Chaque champ ajouté doit avoir un lecteur qu'on sait citer, sinon ne pas "
             "l'ajouter. (3) Une valeur qui se déduit des autres champs est une @property ; un "
             "champ ne se justifie que pour filtrer/trier en base, figer une photo, ou un calcul "
