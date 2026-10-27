@@ -1,7 +1,7 @@
 # Attentes du développeur senior — y compris là où elles contredisent la doc
 
 > Statut : partiel
-> Dernière mise à jour : 2026-10-08
+> Dernière mise à jour : 2026-10-27
 
 Lire `README.md` avant d'ajouter une entrée : clause d'évolution et clause de preuve.
 
@@ -282,3 +282,18 @@ sans titre qui ne distingue rien pour l'utilisateur.
 422). Pas de `choices=` sur `key`, sinon chaque changement de libellé redevient un `AlterField`.
 Le gabarit regroupe le catalogue avec `{% regroup %}`, sans fonction de mise en forme côté
 service. Toute section mise à part porte un titre ; sinon, elle est fusionnée avec la précédente.
+
+---
+
+## Enrichir la fonction de service existante plutôt que post-traiter son résultat chez l'appelant
+
+**Preuve** : ticket #1502 (marque / modèle / référence en tête de description PDF). Le bloc était
+ajouté dans `CartProductSchema.description_computed` après l'appel à `render_description`.
+Commentaire du senior : « Pourquoi ne pas améliorer render_description directement ? ». Le bloc a
+été déplacé dans `product.services.render_description`, qui le lit dans le contexte (`product`,
+`setups`) ; `description_computed` est revenu à l'identique de develop.
+
+**À faire** : quand une donnée doit s'ajouter au résultat d'une fonction de service, modifier
+cette fonction (au besoin via le contexte qu'elle reçoit déjà) au lieu d'assembler autour de son
+retour dans le schéma ou la vue. Même esprit que « Étendre la route existante ». Vérifier avant
+que la fonction n'a pas d'autres appelants qui ne doivent pas recevoir l'ajout (`grep`).
