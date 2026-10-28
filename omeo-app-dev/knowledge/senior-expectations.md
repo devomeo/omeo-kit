@@ -1,7 +1,7 @@
 # Attentes du développeur senior — y compris là où elles contredisent la doc
 
 > Statut : partiel
-> Dernière mise à jour : 2026-10-27
+> Dernière mise à jour : 2026-10-28
 
 Lire `README.md` avant d'ajouter une entrée : clause d'évolution et clause de preuve.
 
@@ -236,6 +236,23 @@ objet se supprime au lieu d'être annulée par une autre. Ne jamais modifier une
 sur `develop` : elle est peut-être appliquée en production. La migration régénérée est déjà
 marquée appliquée en base locale : demander au développeur avant de l'aligner, ses données de test
 peuvent être perdues.
+
+---
+
+## Les fonctions d'un `RunPython` vivent dans le fichier de migration, sans test
+
+**Preuve** : remarque du senior transmise le 2026-10-28 (ticket #1512) — « quand une migration
+exécute un RunPython, il vaut mieux définir les fonctions utilisées directement dans le fichier
+de migration dès lors qu'elles ne servent qu'à cette migration. Cela évite qu'une évolution
+future du code applicatif casse la migration. Pas besoin non plus de les couvrir par des tests. »
+
+**À faire** : une fonction de données appelée par `migrations.RunPython` (et sa réciproque) est
+définie dans le fichier de migration lui-même. Elle n'importe ni service, ni modèle, ni constante
+de l'app : les modèles passent par `apps.get_model("<app>", "<Model>")`, et les valeurs de
+`choices` utiles sont recopiées en littéraux. Seule exception : une fonction déjà utilisée par
+le code applicatif pour autre chose que la migration. Ne pas écrire de test pour ces fonctions
+(pas de `MigrationExecutor` ni de test qui rejoue la migration) ; la vérification se fait en
+appliquant puis en défaisant la migration sur la base locale, avec l'accord du développeur.
 
 ---
 

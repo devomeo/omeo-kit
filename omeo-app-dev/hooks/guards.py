@@ -49,7 +49,9 @@ MIGRATION_MESSAGE = (
     "RÉGÉNÉRER au lieu d'en empiler une autre : supprimer le fichier, makemigrations <app> "
     "--name <suffixe>, black, puis makemigrations --check. Une migration de branche devenue "
     "sans objet se supprime. Ne jamais modifier une migration présente sur develop. Demander "
-    "avant d'aligner la base locale : ses données de test peuvent être perdues."
+    "avant d'aligner la base locale : ses données de test peuvent être perdues. RunPython : "
+    "définir ses fonctions dans le fichier de migration (apps.get_model, aucun import de "
+    "l'app), et ne pas les tester."
 )
 
 
